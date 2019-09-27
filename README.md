@@ -8,7 +8,7 @@ This list will extend upon implementation of additional procedures and functions
 
 Feel free to contribute and add your own implementation.
 
-###Functions wishlist
+### Functions wishlist
 You can submit functions, procedures or algorithms, which you would like to see implemented. The current list is:
 
 - busy beaver game, fixed size
