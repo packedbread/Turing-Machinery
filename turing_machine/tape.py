@@ -1,34 +1,54 @@
 class Tape:
-    def __init__(self, tape='', blank_symbol=' '):
-        self.__tape = dict((index, symbol) for index, symbol in enumerate(tape) if symbol != blank_symbol)
+    def __init__(self, tape='', alphabet=None, blank_symbol=None):
+        if tape == '':
+            if alphabet is None:
+                if blank_symbol is None:
+                    blank_symbol = ' '
+                    alphabet = ' 0'
+                else:
+                    alphabet = blank_symbol
+            else:
+                if blank_symbol is None:
+                    blank_symbol = ' '
+                alphabet = {blank_symbol} | set(alphabet)
+        else:
+            if alphabet is None:
+                if blank_symbol is None:
+                    blank_symbol = ' '
+                alphabet = {blank_symbol} | set(tape)
+        self.tape_dict = dict((index, symbol) for index, symbol in enumerate(tape) if symbol != blank_symbol)
+        self.alphabet = alphabet
         self.blank_symbol = blank_symbol
 
     @property
-    def tape_dict(self):
-        return self.__tape
-
-    @tape_dict.setter
-    def tape_dict(self, value):
-        self.__tape = value
-
-    @property
-    def alphabet(self):
-        return set(self.tape_dict.values()) | {self.blank_symbol}
-
-    @property
     def min_used_index(self):
-        return min(self.tape_dict.keys())
+        return min(self.tape_dict.keys() or [0])
 
     @property
     def max_used_index(self):
-        return max(self.tape_dict.keys())
+        return max(self.tape_dict.keys() or [-1])
+
+    class Iterator:
+        def __init__(self, tape):
+            self.tape = tape
+            self.index = self.tape.min_used_index
+            self.max_index = self.tape.max_used_index
+
+        def __next__(self):
+            if self.index <= self.max_index:
+                self.index += 1
+                return self.tape[self.index - 1]
+            raise StopIteration
+
+    def __iter__(self):
+        return Tape.Iterator(self)
 
     def __str__(self):
         min_used_index = self.min_used_index
         max_used_index = self.max_used_index
         tape = ''
         for i in range(min_used_index, max_used_index + 1):
-            tape += self[i]
+            tape += str(self[i])
         return tape
 
     def __repr__(self):

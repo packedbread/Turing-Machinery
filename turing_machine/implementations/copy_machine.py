@@ -53,10 +53,9 @@ class CopyMachineFactory:
 
         return Turing(
             states=states,
-            alphabet=tape.alphabet,
-            transition_function=tau,
             initial_state=initial_state,
             final_states=(terminal_state,),
+            transition_function=tau,
             tape=tape,
             head=head,
         )

@@ -1,3 +1,4 @@
+import copy
 import string
 
 from .tape import Tape
@@ -8,48 +9,22 @@ class Turing:
     def __init__(
             self,
             states,
-            alphabet,
-            transition_function,
             initial_state,
             final_states,
+            transition_function,
             tape=Tape(),
             head=Head(),
     ):
         self.states = set(states)
-        self.alphabet = set(alphabet)
-        self.transition_function = transition_function
         self.initial_state = initial_state
         self.final_states = set(final_states)
+        self.transition_function = transition_function
         self.initial_tape = tape
         self.initial_head = head
 
-        self.__state = initial_state
-        self.__tape = tape
-        self.__head = head
-
-    @property
-    def tape(self):
-        return self.__tape
-
-    @tape.setter
-    def tape(self, value):
-        self.__tape = value
-
-    @property
-    def head(self):
-        return self.__head
-
-    @head.setter
-    def head(self, value):
-        self.__head = value
-
-    @property
-    def state(self):
-        return self.__state
-
-    @state.setter
-    def state(self, value):
-        self.__state = value
+        self.state = copy.deepcopy(initial_state)
+        self.tape = copy.deepcopy(tape)
+        self.head = copy.deepcopy(head)
 
     @property
     def has_terminated(self):
@@ -66,8 +41,8 @@ class Turing:
 
     @property
     def printable_output(self):
-        if all(symbol in string.printable for symbol in self.alphabet):
-            return ''.join(self.output)
+        if all(str(symbol) in string.printable for symbol in self.tape.alphabet):
+            return ''.join(str(symbol) for symbol in self.output)
         return self.output
 
     def step(self):
@@ -82,9 +57,9 @@ class Turing:
         return transition
 
     def reset(self):
-        self.state = self.initial_state
-        self.tape = self.initial_tape
-        self.head = self.initial_head
+        self.state = copy.deepcopy(self.initial_state)
+        self.tape = copy.deepcopy(self.initial_tape)
+        self.head = copy.deepcopy(self.initial_head)
 
     def run(self, verbosity=2):
         transitions = []
@@ -117,7 +92,7 @@ class Turing:
 
     def __repr__(self):
         return (
-            f'{self.__class__.__name__}(states={repr(self.states)}, alphabet={repr(self.alphabet)}, '
+            f'{self.__class__.__name__}(states={repr(self.states)}, alphabet={repr(self.tape.alphabet)}, '
             f'transition_function={repr(self.transition_function)}), initial_state={repr(self.initial_state)}, '
             f'final_states={repr(self.final_states)}, tape={repr(self.tape)}, head={repr(self.head)})'
         )
